@@ -1,0 +1,24 @@
+# ---- 运行时生成的凭证 / 状态（含真实 token，绝不提交） ----
+lb_refresh_tokens.json
+.lobsterai_token.json
+lobsterai_token.json
+*accounts*.json
+auths/
+lobsterai-*.json
+
+# ---- 密钥 / 环境变量 ----
+.env
+.env.*
+*.pem
+*.key
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# ---- 杂项 ----
+*.log
+*.bak
+.DS_Store
