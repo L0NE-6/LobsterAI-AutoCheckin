@@ -173,3 +173,20 @@ SQLite 是二进制数据库格式，不是纯文本。用 `lobsterai_login.py` 
 ## 📄 License
 
 [MIT](LICENSE)
+### GitHub Actions（免服务器）
+
+仓库已内置 GitHub Actions workflow（`.github/workflows/lobsterai.yml`），每天北京时间 9:00 自动运行。
+
+1. **Fork 本仓库**（或使用自己的私有仓库）
+2. **设置 Secrets** — Settings → Secrets and variables → Actions → New repository secret：
+
+   | Secret 名 | 值 |
+   | :--- | :--- |
+   | `LOBSTERAI_TOKEN` | `uid:AT:RT`（从 lobsterai_login.py 获取） |
+   | `PUSHPLUS_TOKEN` | 可选，推送用 |
+
+3. **手动测试** — Actions → LobsterAI Daily → Run workflow
+
+> ⚠️ **建议将仓库设为 Private**：Actions 运行时会将续期后的 token 缓存提交到仓库（`lb_refresh_tokens.json`），公开仓库会跳过此步骤以避免 RT 泄露。私有仓库则自动持久化，长期免维护。
+
+### 本地运行

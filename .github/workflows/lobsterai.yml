@@ -1,0 +1,50 @@
+name: 🦞 LobsterAI Daily
+
+on:
+  schedule:
+    # 北京时间 09:00（GitHub cron 用 UTC，北京时间 = UTC+8）
+    - cron: "0 1 * * *"
+  workflow_dispatch:          # 支持手动触发
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lobsterai
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: pip install requests
+
+      - name: Run LobsterAI Checkin
+        env:
+          LOBSTERAI_TOKEN: ${{ secrets.LOBSTERAI_TOKEN }}
+          PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
+        run: python lobsterai_checkin.py
+
+      # ⚠️ 仅在【私有仓库】中持久化令牌状态；公开仓库会跳过，避免 RT 泄露
+      - name: Persist token state (private repo only)
+        if: always() && github.event.repository.private == true
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f lb_refresh_tokens.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "令牌状态无变化"
+          else
+            git commit -m "chore: 更新令牌状态 [skip ci]"
+            git push
+          fi
