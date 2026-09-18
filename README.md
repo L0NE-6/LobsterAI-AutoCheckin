@@ -5,12 +5,12 @@
 **LobsterAI 每日自动签到 · 短信验证码登录 · 桌面端提取 Token · 多账号 · 自动续期 · 青龙友好**
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![Dependencies](https://img.shields.io/badge/dependencies-requests-blue)](.)
-[![Platform](https://img.shields.io/badge/platform-青龙%20%7C%20本地%20%7C%20任意定时-blue)](.)
+[![Dependencies](https://img.shields.io/badge/dependencies-requests%20%7C%20playwright-blue)](.)
+[![Platform](https://img.shields.io/badge/platform-青龙%20%7C%20本地%20%7C%20GitHub%20Actions-blue)](.)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/L0NE-6/LobsterAI-AutoCheckin?style=social)](https://github.com/L0NE-6/LobsterAI-AutoCheckin)
 
-[✨ 特性](#-特性) · [🔑 获取 Token](#-获取-token新手必看) · [🚀 快速开始](#-快速开始) · [⚙️ 配置](#️-环境变量) · [❓ FAQ](#-常见问题)
+[✨ 特性](#-特性) · [🔑 获取 Token](#-获取-token新手必看) · [🚀 快速开始](#-快速开始) · [⚙️ 环境变量](#️-环境变量) · [❓ FAQ](#-常见问题)
 
 </div>
 
@@ -24,6 +24,7 @@
 | :--- | :--- |
 | `lobsterai_checkin.py` | 🎯 多账号每日签到，slot → context → check_in → 复核，自动续期 + 推送 |
 | `lobsterai_login.py` | 🔑 从 LobsterAI 桌面客户端一键提取 accessToken + refreshToken（免抓包） |
+| `lobsterai_sms.py` | 📲 手机号 + 短信验证码登录，手动过滑块后自动获取 Token（免客户端） |
 
 签到与桌面端提取仅需 **requests**；短信登录需 **Playwright**（`pip install playwright && playwright install chromium`）。
 
@@ -38,7 +39,7 @@
 - 🔄 **版本自动获取** — 从官方更新接口拉当前客户端版本，失败自动兜底
 - 📢 **微信推送** — 可选 PUSHPLUS_TOKEN，签到结果推送到微信
 - 🎨 **美观日志** — 带图标与分区的执行日志，状态一目了然
-- 🪶 **轻量依赖** — 仅需 `requests`，无其他第三方库
+- 🪶 **轻量依赖** — 签到仅需 `requests`，无其他第三方库
 
 ---
 
@@ -75,6 +76,26 @@ python lobsterai_login.py --export
 
 直接输出一行 `uid:AT:RT` 格式，复制粘贴到青龙环境变量即可。
 
+### 📲 方式三：短信验证码登录（无需桌面客户端）
+
+没有装 LobsterAI 桌面客户端？用 `lobsterai_sms.py`，
+自动打开浏览器 → 填手机号 → 手动拖滑块过验证 → 输入收到的验证码 → 自动换 Token。
+
+```bash
+# 先安装 Playwright（首次需要）
+pip install playwright && playwright install chromium
+
+# 运行
+python lobsterai_sms.py
+python lobsterai_sms.py 138xxxxxxxx
+```
+
+浏览器会自动打开登录页并填好手机号，你只需要：
+1. 拖动滑块完成人机验证
+2. 等手机收到验证码后输入
+
+脚本会自动提交登录、截获回调 code 并换取 `uid:AT:RT`。
+
 ---
 
 ## 🚀 快速开始
@@ -93,6 +114,22 @@ python lobsterai_login.py --export
 ```
 0 9 * * *  python lobsterai_checkin.py
 ```
+
+### GitHub Actions（免服务器）
+
+仓库已内置 GitHub Actions workflow（`.github/workflows/lobsterai.yml`），每天北京时间 9:00 自动运行。
+
+1. **Fork 本仓库**（或使用自己的私有仓库）
+2. **设置 Secrets** — Settings → Secrets and variables → Actions → New repository secret：
+
+   | Secret 名 | 值 |
+   | :--- | :--- |
+   | `LOBSTERAI_TOKEN` | `uid:AT:RT`（从 lobsterai_login.py 获取） |
+   | `PUSHPLUS_TOKEN` | 可选，推送用 |
+
+3. **手动测试** — Actions → LobsterAI Daily → Run workflow
+
+> ⚠️ **建议将仓库设为 Private**：Actions 运行时会将续期后的 token 缓存提交到仓库（`lb_refresh_tokens.json`），公开仓库会跳过此步骤以避免 RT 泄露。私有仓库则自动持久化，长期免维护。
 
 ### 本地运行
 
@@ -173,42 +210,3 @@ SQLite 是二进制数据库格式，不是纯文本。用 `lobsterai_login.py` 
 ## 📄 License
 
 [MIT](LICENSE)
-### GitHub Actions（免服务器）
-
-仓库已内置 GitHub Actions workflow（`.github/workflows/lobsterai.yml`），每天北京时间 9:00 自动运行。
-
-1. **Fork 本仓库**（或使用自己的私有仓库）
-2. **设置 Secrets** — Settings → Secrets and variables → Actions → New repository secret：
-
-   | Secret 名 | 值 |
-   | :--- | :--- |
-   | `LOBSTERAI_TOKEN` | `uid:AT:RT`（从 lobsterai_login.py 获取） |
-   | `PUSHPLUS_TOKEN` | 可选，推送用 |
-
-3. **手动测试** — Actions → LobsterAI Daily → Run workflow
-
-> ⚠️ **建议将仓库设为 Private**：Actions 运行时会将续期后的 token 缓存提交到仓库（`lb_refresh_tokens.json`），公开仓库会跳过此步骤以避免 RT 泄露。私有仓库则自动持久化，长期免维护。
-
-### 本地运行
-| `lobsterai_sms.py` | 📲 手机号 + 短信验证码登录，手动过滑块后自动获取 Token（免客户端） |
-复制粘贴到青龙环境变量即可。
-
-### 📲 方式三：短信验证码登录（无需桌面客户端）
-
-没有装 LobsterAI 桌面客户端？用 `lobsterai_sms.py`，
-自动打开浏览器 → 填手机号 → 手动拖滑块过验证 → 输入收到的验证码 → 自动换 Token。
-
-```bash
-# 先安装 Playwright（首次需要）
-pip install playwright && playwright install chromium
-
-# 运行
-python lobsterai_sms.py
-python lobsterai_sms.py 138xxxxxxxx
-```
-
-浏览器会自动打开登录页并填好手机号，你只需要：
-1. 拖动滑块完成人机验证
-2. 等手机收到验证码后输入
-
-脚本会自动提交登录、截获回调 code 并换取 `uid:AT:RT`。
