@@ -18,14 +18,14 @@
 
 ## 📖 简介
 
-**LobsterAI AutoCheckin** 是一套用于 LobsterAI（网易有道）的每日积分自动化工具，包含 2 个独立脚本：
+**LobsterAI AutoCheckin** 是一套用于 LobsterAI（网易有道）的每日积分自动化工具，包含 3 个独立脚本：
 
 | 脚本 | 作用 |
 | :--- | :--- |
 | `lobsterai_checkin.py` | 🎯 多账号每日签到，slot → context → check_in → 复核，自动续期 + 推送 |
 | `lobsterai_login.py` | 🔑 从 LobsterAI 桌面客户端一键提取 accessToken + refreshToken（免抓包） |
 
-纯 **requests** 实现，依赖极少，可直接丢进青龙面板 / 本地 crontab / 任意定时任务运行。
+签到与桌面端提取仅需 **requests**；短信登录需 **Playwright**（`pip install playwright && playwright install chromium`）。
 
 ---
 
@@ -190,3 +190,25 @@ SQLite 是二进制数据库格式，不是纯文本。用 `lobsterai_login.py` 
 > ⚠️ **建议将仓库设为 Private**：Actions 运行时会将续期后的 token 缓存提交到仓库（`lb_refresh_tokens.json`），公开仓库会跳过此步骤以避免 RT 泄露。私有仓库则自动持久化，长期免维护。
 
 ### 本地运行
+| `lobsterai_sms.py` | 📲 手机号 + 短信验证码登录，手动过滑块后自动获取 Token（免客户端） |
+复制粘贴到青龙环境变量即可。
+
+### 📲 方式三：短信验证码登录（无需桌面客户端）
+
+没有装 LobsterAI 桌面客户端？用 `lobsterai_sms.py`，
+自动打开浏览器 → 填手机号 → 手动拖滑块过验证 → 输入收到的验证码 → 自动换 Token。
+
+```bash
+# 先安装 Playwright（首次需要）
+pip install playwright && playwright install chromium
+
+# 运行
+python lobsterai_sms.py
+python lobsterai_sms.py 138xxxxxxxx
+```
+
+浏览器会自动打开登录页并填好手机号，你只需要：
+1. 拖动滑块完成人机验证
+2. 等手机收到验证码后输入
+
+脚本会自动提交登录、截获回调 code 并换取 `uid:AT:RT`。
