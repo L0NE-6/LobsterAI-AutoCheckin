@@ -2,7 +2,7 @@
 
 # 🦞 LobsterAI AutoCheckin
 
-**LobsterAI 每日自动签到 · 桌面端一键提取 Token · 多账号 · 自动续期 · 青龙友好**
+**LobsterAI 每日自动签到 · 短信验证码登录 · 桌面端提取 Token · 多账号 · 自动续期 · 青龙友好**
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Dependencies](https://img.shields.io/badge/dependencies-requests-blue)](.)
