@@ -54,8 +54,16 @@ def jwt_exp_str(tok):
 
 class CB(BaseHTTPRequestHandler):
     code = None
+    expected_state = ""
     def do_GET(self):
         q = parse_qs(urlparse(self.path).query)
+        got_state = q.get("state", [""])[0]
+        if not CB.expected_state or not secrets.compare_digest(got_state, CB.expected_state):
+            self.send_response(400)
+            self.send_header("Content-Type", "text/plain; charset=utf-8")
+            self.end_headers()
+            self.wfile.write(b"state mismatch")
+            return
         CB.code = q.get("code", [""])[0]
         self.send_response(200)
         self.send_header("Content-Type", "text/html")
@@ -65,8 +73,10 @@ class CB(BaseHTTPRequestHandler):
         pass
 
 
-def start_cb(port):
-    srv = HTTPServer(("0.0.0.0", port), CB)
+def start_cb(port, state=""):
+    CB.expected_state = state
+    CB.code = None
+    srv = HTTPServer(("127.0.0.1", port), CB)
     threading.Thread(target=srv.serve_forever, daemon=True).start()
     return srv
 
@@ -75,7 +85,7 @@ def do_login(phone, headless=False, port=CALLBACK_PORT):
     state = "".join(secrets.choice(string.hexdigits) for _ in range(32))
     install_uuid = str(uuid.uuid4())
     login_url = "%s/portal#/login?source=electron&redirect_uri=http://127.0.0.1:%d/auth/callback&state=%s" % (PORTAL, port, state)
-    srv = start_cb(port)
+    srv = start_cb(port, state)
     print("  %s" % phone)
     print()
 
