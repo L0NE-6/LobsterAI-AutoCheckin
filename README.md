@@ -210,3 +210,9 @@ SQLite 是二进制数据库格式，不是纯文本。用 `lobsterai_login.py` 
 ## 📄 License
 
 [MIT](LICENSE)
+
+---
+
+## 🤝 反馈与贡献
+
+使用中遇到问题或想补充功能，欢迎提交 [Issue](https://github.com/L0NE-6/LobsterAI-AutoCheckin/issues) 或发起 [Pull Request](https://github.com/L0NE-6/LobsterAI-AutoCheckin/pulls)。
