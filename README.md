@@ -12,6 +12,8 @@
 
 [✨ 特性](#-特性) · [🔑 获取 Token](#-获取-token新手必看) · [🚀 快速开始](#-快速开始) · [⚙️ 环境变量](#️-环境变量) · [❓ FAQ](#-常见问题)
 
+> 📦 **下载 Release 包**：https://github.com/L0NE-6/LobsterAI-AutoCheckin/releases/latest
+
 </div>
 
 ---
@@ -210,6 +212,21 @@ SQLite 是二进制数据库格式，不是纯文本。用 `lobsterai_login.py` 
 ## 📄 License
 
 [MIT](LICENSE)
+
+---
+
+## 📌 版本与发布
+
+每个版本独立发布，绝不合并，方便查看版本差异与回退旧版：
+
+| 版本号规则 | 含义 | 示例 |
+| :--- | :--- | :--- |
+| `v主.次.修` | 语义化版本 | `v1.0.0` `v1.0.1` `v1.1.0` |
+| 修复类更新 | 修复位 +1 | `v1.0.1` |
+| 功能类更新 | 次位 +1，修复位归零 | `v1.1.0` |
+| 不兼容变更 | 主位 +1 | `v2.0.0` |
+
+所有历史版本：https://github.com/L0NE-6/LobsterAI-AutoCheckin/releases
 
 ---
 
