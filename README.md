@@ -6,7 +6,7 @@
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Dependencies](https://img.shields.io/badge/dependencies-requests%20%7C%20playwright-blue)](.)
-[![Platform](https://img.shields.io/badge/platform-青龙%20%7C%20本地%20%7C%20GitHub%20Actions-blue)](.)
+[![Platform](https://img.shields.io/badge/platform-青龙%20%7C%20本地%20%7C%20任意定时-blue)](.)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/L0NE-6/LobsterAI-AutoCheckin?style=social)](https://github.com/L0NE-6/LobsterAI-AutoCheckin)
 
@@ -116,22 +116,6 @@ python lobsterai_sms.py 138xxxxxxxx
 ```
 0 9 * * *  python lobsterai_checkin.py
 ```
-
-### GitHub Actions（免服务器）
-
-仓库已内置 GitHub Actions workflow（`.github/workflows/lobsterai.yml`），每天北京时间 9:00 自动运行。
-
-1. **Fork 本仓库**（或使用自己的私有仓库）
-2. **设置 Secrets** — Settings → Secrets and variables → Actions → New repository secret：
-
-   | Secret 名 | 值 |
-   | :--- | :--- |
-   | `LOBSTERAI_TOKEN` | `uid:AT:RT`（从 lobsterai_login.py 获取） |
-   | `PUSHPLUS_TOKEN` | 可选，推送用 |
-
-3. **手动测试** — Actions → LobsterAI Daily → Run workflow
-
-> ⚠️ **建议将仓库设为 Private**：Actions 运行时会将续期后的 token 缓存提交到仓库（`lb_refresh_tokens.json`），公开仓库会跳过此步骤以避免 RT 泄露。私有仓库则自动持久化，长期免维护。
 
 ### 本地运行
 
