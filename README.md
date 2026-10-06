@@ -10,7 +10,7 @@
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/L0NE-6/LobsterAI-AutoCheckin?style=social)](https://github.com/L0NE-6/LobsterAI-AutoCheckin)
 
-[✨ 特性](#-特性) · [🔑 获取 Token](#-获取-token新手必看) · [🚀 快速开始](#-快速开始) · [⚙️ 环境变量](#️-环境变量) · [❓ FAQ](#-常见问题)
+[✨ 特性](#-特性) · [🔑 获取 Token](#-获取-token新手必看) · [🚀 快速开始](#-快速开始) · [⚙️ 环境变量](#️-环境变量) · [❓ FAQ](#-常见问题) · [☕ 投喂](#-投喂--打赏)
 
 > 📦 **下载 Release 包**：https://github.com/L0NE-6/LobsterAI-AutoCheckin/releases/latest
 
@@ -233,3 +233,15 @@ SQLite 是二进制数据库格式，不是纯文本。用 `lobsterai_login.py` 
 ## 🤝 反馈与贡献
 
 使用中遇到问题或想补充功能，欢迎提交 [Issue](https://github.com/L0NE-6/LobsterAI-AutoCheckin/issues) 或发起 [Pull Request](https://github.com/L0NE-6/LobsterAI-AutoCheckin/pulls)。
+
+---
+
+## ☕ 投喂 / 打赏
+
+这个项目完全免费开源。如果它帮到了你，欢迎扫码请我喝杯咖啡，你的支持会让项目走得更远。
+
+收到的投喂会优先用于升级开发设备——目前的机器跑不动桌面端打包，设备到位后会推进桌面 GUI 版的计划。
+
+| 支付宝（支持信用卡 / 花呗） | 微信支付 |
+| :---: | :---: |
+| <img src="assets/donate/alipay.jpg" width="300" alt="支付宝打赏码"> | <img src="assets/donate/wechat.png" width="300" alt="微信打赏码"> |
