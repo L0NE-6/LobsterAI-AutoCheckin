@@ -209,6 +209,23 @@ SQLite 是二进制数据库格式，不是纯文本。用 `lobsterai_login.py` 
 
 ---
 
+## 📁 目录结构
+
+```text
+LobsterAI-AutoCheckin/
+├── lobsterai_checkin.py             # 每日签到（多账号 / Token 自动续期 / 推送）
+├── lobsterai_login.py               # 桌面端登录态提取 / 导出环境变量
+├── lobsterai_sms.py                 # 短信验证码登录（可选，需 Playwright）
+├── requirements.txt                 # 依赖说明（签到需 requests；短信登录可选 playwright）
+├── README.md
+├── CHANGELOG.md
+├── LICENSE
+├── assets/                          # 收款码素材
+└── .github/workflows/lobsterai.yml  # GitHub Actions 工作流（Fork 后可用）
+```
+
+---
+
 ## 📄 License
 
 [MIT](LICENSE)
@@ -227,6 +244,8 @@ SQLite 是二进制数据库格式，不是纯文本。用 `lobsterai_login.py` 
 | 不兼容变更 | 主位 +1 | `v2.0.0` |
 
 所有历史版本：https://github.com/L0NE-6/LobsterAI-AutoCheckin/releases
+
+更新记录见 [CHANGELOG.md](CHANGELOG.md)。
 
 ---
 

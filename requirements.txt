@@ -1,0 +1,5 @@
+# 每日签到与桌面端提取：仅需 requests
+requests>=2.25.0
+
+# 短信验证码登录（lobsterai_sms.py，可选）需要 Playwright：
+# pip install playwright && playwright install chromium
