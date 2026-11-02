@@ -117,6 +117,10 @@ task lobsterai_checkin.py
 
 帳號憑據只應透過環境變數、Secrets 或本機客戶端儲存提供。請勿公開資料庫、匯出的 AT/RT、簡訊驗證碼、`lb_refresh_tokens.json` 或未脫敏日誌。提交 Issue 前仍應人工檢查帳號識別資訊。
 
+## 使用邊界與轉載聲明
+
+官方倉庫、腳本、部署說明與 Release 均免費公開。未經作者明確書面許可，請勿將本專案包裝為付費資源、付費部署或包更新服務，請勿刪除署名後冒充原創，請勿冒充作者，亦請勿使用作者身分、名稱、頭像或收款碼製造背書假象；請勿搬運到無關帳號、群組、頻道或付費平台以漲粉、截流、轉賣或引流。違規時，作者可要求下架，並可視情況暫停更新、封存或刪除倉庫。完整規則見 [NOTICE.md](../NOTICE.md)。
+
 ## 連結
 
 - [Releases](https://github.com/L0NE-6/LobsterAI-AutoCheckin/releases)

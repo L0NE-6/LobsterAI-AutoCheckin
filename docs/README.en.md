@@ -117,6 +117,10 @@ The script reads the account context after submitting the check-in. Success is b
 
 Account credentials are supplied through environment variables, Secrets, or local client storage. Do not publish the database, exported AT/RT, SMS code, `lb_refresh_tokens.json`, or unredacted logs. Review debug output before attaching it to an Issue because account identifiers may still appear.
 
+## Usage and redistribution
+
+The official repository, scripts, deployment instructions, and releases are and remain free. Without explicit written permission, do not package this project as a paid resource, paid deployment service, or paid update service; do not remove attribution and claim the work as original; do not impersonate the author; and do not use the author's identity, name, avatar, or payment QR codes to imply official endorsement. Do not repost the project through unrelated accounts, groups, channels, or paid platforms for follower growth, traffic diversion, or resale. Violations may lead to a takedown request, and the author may pause updates or archive or delete the repository. Read the full [NOTICE.md](../NOTICE.md).
+
 ## Links
 
 - [Releases](https://github.com/L0NE-6/LobsterAI-AutoCheckin/releases)
