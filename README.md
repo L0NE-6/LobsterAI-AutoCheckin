@@ -1,266 +1,292 @@
 <div align="center">
 
+<sub><strong>L0NE-6 · DAILY SIGNAL</strong></sub>
+
 # 🦞 LobsterAI AutoCheckin
 
-**LobsterAI 每日自动签到 · 短信验证码登录 · 桌面端提取 Token · 多账号 · 自动续期 · 青龙友好**
+**LobsterAI 每日积分签到工具，支持桌面端凭据提取、短信登录、多账号、Token 续期与可选推送。**
 
-[![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![Dependencies](https://img.shields.io/badge/dependencies-requests%20%7C%20playwright-blue)](.)
-[![Platform](https://img.shields.io/badge/platform-青龙%20%7C%20本地%20%7C%20GitHub%20Actions-blue)](.)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/L0NE-6/LobsterAI-AutoCheckin?style=social)](https://github.com/L0NE-6/LobsterAI-AutoCheckin)
+[简体中文](README.md) · [English](docs/README.en.md) · [繁體中文](docs/README.zh-Hant.md) · [日本語](docs/README.ja.md) · [한국어](docs/README.ko.md) · [Português (BR)](docs/README.pt-BR.md)
 
-[✨ 特性](#-特性) · [🔑 获取 Token](#-获取-token新手必看) · [🚀 快速开始](#-快速开始) · [⚙️ 环境变量](#️-环境变量) · [❓ FAQ](#-常见问题) · [☕ 投喂](#-投喂--打赏)
+<img src="https://img.shields.io/github/v/release/L0NE-6/LobsterAI-AutoCheckin?style=for-the-badge&label=Release&color=2ea44f&logo=github" />
+<img src="https://img.shields.io/github/stars/L0NE-6/LobsterAI-AutoCheckin?style=for-the-badge&label=Stars&color=FFC75F&logo=github" />
+<img src="https://img.shields.io/badge/Python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" />
+<img src="https://img.shields.io/badge/%E9%9D%92%E9%BE%99-Qinglong-4EAA25?style=for-the-badge" />
+<img src="https://img.shields.io/badge/GitHub%20Actions-Supported-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" />
+<img src="https://img.shields.io/badge/License-MIT-F472B6?style=for-the-badge" />
+<a href="https://github.com/L0NE-6/LobsterAI-AutoCheckin/releases"><img src="https://img.shields.io/badge/%E2%AC%87%20Download-Releases-2ea44f?style=for-the-badge&logo=github" /></a>
 
-> 📦 **下载 Release 包**：https://github.com/L0NE-6/LobsterAI-AutoCheckin/releases/latest
+[✨ 30 秒速览](#-30-秒速览) · [🚀 青龙面板](#-青龙面板) · [☁️ GitHub Actions](#-github-actions) · [🔑 获取凭据](#-获取凭据) · [🔧 环境变量](#-环境变量) · [❓ 常见问题](#-常见问题) · [✦ 星轨](#-星轨-star-trail)
 
 </div>
 
 ---
 
-## 📖 简介
+## ✨ 30 秒速览
 
-**LobsterAI AutoCheckin** 是一套用于 LobsterAI（网易有道）的每日积分自动化工具，包含 3 个独立脚本：
-
-| 脚本 | 作用 |
+| 维度 | 说明 |
 | :--- | :--- |
-| `lobsterai_checkin.py` | 🎯 多账号每日签到，slot → context → check_in → 复核，自动续期 + 推送 |
-| `lobsterai_login.py` | 🔑 从 LobsterAI 桌面客户端一键提取 accessToken + refreshToken（免抓包） |
-| `lobsterai_sms.py` | 📲 手机号 + 短信验证码登录，手动过滑块后自动获取 Token（免客户端） |
+| **用途** | 为 LobsterAI（网易有道）账号领取每日签到积分，并在签到后重新读取状态复核。 |
+| **输入** | `LOBSTERAI_TOKEN`，每行一个 `uid:AT:RT`；可选 `PUSHPLUS_TOKEN`。 |
+| **输出** | 分账号执行结果、成功 / 已签 / 未投放 / 异常统计、当日积分摘要与可选微信推送。 |
+| **部署** | 青龙面板、GitHub Actions、Windows / Linux 本地运行。 |
+| **依赖** | 签到与桌面端 Token 提取仅需 `requests`；短信验证码登录额外使用 Playwright。 |
+| **成功判据** | 签到后重新读取 context，只有 `claimedToday` 状态确认后才按成功报告。 |
 
-签到与桌面端提取仅需 **requests**；短信登录需 **Playwright**（`pip install playwright && playwright install chromium`）。
+## ✨ 核心能力
 
----
+- **每日签到**：按 `slot → context → check_in → context` 完成领取与复核。
+- **多账号**：使用 `LOBSTERAI_TOKEN` 配置任意数量账号。
+- **滚动续期**：AT 距过期不足 7 天时用 RT 刷新，并缓存轮换后的凭据。
+- **三种取 Token 路径**：桌面 SQLite 提取、静默导出、Playwright 短信登录。
+- **幂等处理**：已签到、活动未投放和未发放按不同状态说明。
+- **版本探测**：从官方更新接口获取客户端版本，也可通过参数强制覆盖。
+- **推送与脱敏**：可选 PushPlus 通知，日志不展示完整 Token。
 
-## ✨ 特性
+## 🔑 获取凭据
 
-- 🔐 **Token 自动续期** — AT 快过期时用 RT 自动刷新，续期结果缓存到本地 JSON，形成滚动续期
-- 👥 **多账号** — 支持任意数量账号，环境变量换行分隔即可配置
-- ✅ **幂等安全** — 已签到 / 活动未投放 / 未发放三种情况都不会误计
-- 📋 **结果复核** — 签到后再拉一次 context，只有 claimedToday 确实变化才算成功
-- 🔄 **版本自动获取** — 从官方更新接口拉当前客户端版本，失败自动兜底
-- 📢 **微信推送** — 可选 PUSHPLUS_TOKEN，签到结果推送到微信
-- 🎨 **美观日志** — 带图标与分区的执行日志，状态一目了然
-- 🪶 **轻量依赖** — 签到仅需 `requests`，无其他第三方库
+签到脚本需要 `uid:AT:RT`。其中 AT 是 accessToken，RT 是 refreshToken；只提供 AT 也可以运行，但到期后需要重新登录。
 
----
+### 方式一：读取桌面客户端
 
-## 🔑 获取 Token（新手必看）
-
-> 这是**唯一**需要你手动准备的东西，弄到它就大功告成。
-
-### ✅ 方式一：桌面客户端一键提取（推荐）
-
-本仓库自带 `lobsterai_login.py`，会自动从 LobsterAI 桌面客户端的本地数据库读取登录凭据，**零抓包、不联网、不上传**。
+先在电脑上安装并登录 LobsterAI 桌面客户端，然后运行：
 
 ```bash
-# 1. 先在电脑上安装并登录 LobsterAI 桌面客户端
-# 2. 运行提取脚本
 python lobsterai_login.py
-
-# 3. 终端会打印出 UID、AT 有效期、以及可直接粘贴的环境变量值
 ```
 
-Token 存储在（Windows）：
+工具默认扫描 Windows 下的：
 
 ```text
 %APPDATA%/LobsterAI/lobsterai.sqlite
 ```
 
-数据库 `kv` 表中键名 `auth_tokens` 的值就是 JSON 格式的 accessToken + refreshToken。
-脚本是二进制格式的 SQLite 文件解析，所以用记事本打开是乱码是正常的。
+数据库 `kv` 表中的 `auth_tokens` 保存 `accessToken` 与 `refreshToken`。该文件是 SQLite 二进制数据库，直接打开可能出现乱码，应使用工具解析。
 
-### 📲 方式二：静默输出（脚本调用 / 青龙直填）
+### 方式二：静默导出
 
 ```bash
 python lobsterai_login.py --export
 ```
 
-直接输出一行 `uid:AT:RT` 格式，复制粘贴到青龙环境变量即可。
-
-### 📲 方式三：短信验证码登录（无需桌面客户端）
-
-没有装 LobsterAI 桌面客户端？用 `lobsterai_sms.py`，
-自动打开浏览器 → 填手机号 → 手动拖滑块过验证 → 输入收到的验证码 → 自动换 Token。
+标准输出只有一行 `uid:AT:RT`，适合直接写入青龙环境变量。若无法读取桌面数据库，也可使用：
 
 ```bash
-# 先安装 Playwright（首次需要）
-pip install playwright && playwright install chromium
+python lobsterai_login.py --manual
+```
 
-# 运行
+### 方式三：短信验证码登录
+
+```bash
+pip install playwright
+playwright install chromium
 python lobsterai_sms.py
 python lobsterai_sms.py 138xxxxxxxx
+python lobsterai_sms.py --headless 138xxxxxxxx
 ```
 
-浏览器会自动打开登录页并填好手机号，你只需要：
-1. 拖动滑块完成人机验证
-2. 等手机收到验证码后输入
+浏览器会打开登录页并填入手机号。按页面提示完成滑块、输入短信验证码后，脚本从回调中换取 `uid:AT:RT`。Playwright 仅用于这条可选登录路径。
 
-脚本会自动提交登录、截获回调 code 并换取 `uid:AT:RT`。
+> [!IMPORTANT]
+> 不要把真实手机号、验证码、AT 或 RT 发到 Issue。示例中的手机号只用于说明命令位置。
 
----
+## 🚀 青龙面板
 
-## 🚀 快速开始
+1. 将 `lobsterai_checkin.py` 上传到青龙脚本目录。
+2. 安装签到依赖：
 
-### 青龙面板
+   ```bash
+   pip3 install requests
+   ```
 
-1. **上传脚本** — 把 `lobsterai_checkin.py` 上传到青龙
-2. **设置变量** — 环境变量 → 新建：
+3. 添加环境变量：
 
-| 变量名 | 值 |
-| :--- | :--- |
-| `LOBSTERAI_TOKEN` | `uid:AT:RT`（从 `lobsterai_login.py --export` 获取） |
+   ```text
+   LOBSTERAI_TOKEN=UID_VALUE:AT_VALUE:RT_VALUE
+   ```
 
-3. **设置定时** — 定时任务 → 新建：
+4. 新建定时任务，从脚本列表生成运行命令：
 
-```
-0 9 * * *  python lobsterai_checkin.py
-```
+   ```bash
+   task lobsterai_checkin.py
+   ```
 
-### GitHub Actions（免服务器）
+建议 cron：
 
-仓库已内置 GitHub Actions workflow（`.github/workflows/lobsterai.yml`），Fork 之后配置好 Secrets，即可每天北京时间 9:00 自动签到。
-
-1. **Fork 本仓库**（或使用自己的私有仓库）
-2. **设置 Secrets** — Settings → Secrets and variables → Actions → New repository secret：
-
-   | Secret 名 | 值 |
-   | :--- | :--- |
-   | `LOBSTERAI_TOKEN` | `uid:AT:RT`（从 lobsterai_login.py 获取） |
-   | `PUSHPLUS_TOKEN` | 可选，推送用 |
-
-3. **手动测试** — Actions → LobsterAI Daily → Run workflow
-
-> ⚠️ **建议将仓库设为 Private**：Actions 运行时会将续期后的 token 缓存提交到仓库（`lb_refresh_tokens.json`），公开仓库会跳过此步骤以避免 RT 泄露。私有仓库则自动持久化，长期免维护。
-
-### 本地运行
-
-```bash
-# 全部账号签到
-python lobsterai_checkin.py
-
-# 只跑指定 UID
-python lobsterai_checkin.py --only 10001
-
-# 强制指定客户端版本（版本过期时用）
-python lobsterai_checkin.py --version 2026.9.10
+```cron
+0 9 * * *
 ```
 
----
+青龙按面板本地时间解释 cron。多账号在 `LOBSTERAI_TOKEN` 中逐行追加，或使用脚本支持的 `@` 分隔。
 
-## ⚙️ 环境变量
+## 🚀 GitHub Actions
+
+仓库内置 [`.github/workflows/lobsterai.yml`](.github/workflows/lobsterai.yml)，定时为 UTC `0 1 * * *`，对应北京时间每天 09:00。
+
+1. Fork 仓库，或导入到你自己的私有仓库。
+2. 在 **Settings → Secrets and variables → Actions** 添加 Secrets。
+3. 进入 **Actions → LobsterAI Daily → Run workflow** 手动验证。
+4. 若 Fork 后定时 workflow 没有自动启用，在 Actions 页面手动启用。
+
+| Secret | 必填 | 说明 |
+| :--- | :---: | :--- |
+| `LOBSTERAI_TOKEN` | ✅ | 一行或多行 `uid:AT:RT`。 |
+| `PUSHPLUS_TOKEN` | ➖ | 可选 PushPlus 推送令牌。 |
+
+工作流使用 `permissions: contents: write`，但只在**私有仓库**中持久化 `lb_refresh_tokens.json`。公开仓库会跳过硬编码提交，避免轮换后的 RT 泄露。公开仓库每次运行都应提供仍然有效的 Secret。
+
+## 🔧 环境变量
 
 | 变量 | 必填 | 说明 |
-| :--- | :--- | :--- |
-| `LOBSTERAI_TOKEN` | ✅ | 每行一个账号，格式 `uid:AT:RT` |
-| `PUSHPLUS_TOKEN` | 可选 | 填了则推送签到结果到微信 |
+| :--- | :---: | :--- |
+| `LOBSTERAI_TOKEN` | ✅ | 多账号签到凭据，格式 `uid:AT:RT`。 |
+| `PUSHPLUS_TOKEN` | ➖ | 配置后把签到摘要推送到微信。 |
 
-### 多账号格式
+单账号示例：
 
+```text
+UID_VALUE:AT_VALUE:RT_VALUE
 ```
-10001:eyJhbGciOiJIUzUxMiJ9.xxx:eyJhbGciOiJIUzUxMiJ9.yyy
-10002:eyJhbGciOiJIUzUxMiJ9.aaa:eyJhbGciOiJIUzUxMiJ9.bbb
+
+多账号示例：
+
+```text
+UID_1:AT_VALUE_1:RT_VALUE_1
+UID_2:AT_VALUE_2:RT_VALUE_2
 ```
 
-- AT = accessToken（JWT，约 30 天有效）
-- RT = refreshToken（JWT，约 180 天有效）
-- uid = 账号 UID（脚本会自动从 JWT 解析，填错也能用）
+脚本也支持纯 AT、`uid:AT` 和以 `@` 分隔多个条目。只配置 AT 时不会自动续期。
 
----
+## 🔁 Token 续期
 
-## 📦 Token 续期机制
+- 每次运行检查 AT 的 JWT `exp`。
+- AT 距过期不足 7 天时，使用 RT 请求续期。
+- 续期成功后写入脚本目录的 `lb_refresh_tokens.json`。
+- 下一轮优先读取缓存中的最新 AT / RT。
+- 每次刷新可能轮换 RT，因此缓存文件同样属于敏感凭据。
 
-- 脚本每次运行时检查 AT 的 JWT `exp`，距过期 < 7 天时自动用 RT 续期
-- 续期成功后新 token 缓存到脚本目录 `lb_refresh_tokens.json`
-- 下次运行自动使用缓存的新 token，形成滚动续期
-- RT 本身约 180 天有效，每次续期会换发新 RT 并立即保存
+在青龙或可写脚本目录中，缓存可以持续保留；在临时容器或 Public Actions 运行中，不要依赖缓存长期存在。
 
----
+## ⌨️ 命令行参数
+
+| 签到参数 | 作用 |
+| :--- | :--- |
+| （无） | 运行全部账号。 |
+| `--only UID` | 只运行指定 UID。 |
+| `--version VERSION` | 强制指定客户端版本。 |
+| `--auths PATH` | 指定本地 `auths` 目录；环境变量为空时使用。 |
+| `--base URL` | 覆盖上游 API 地址。 |
+
+| 登录工具参数 | 作用 |
+| :--- | :--- |
+| `--export` | 只输出 `uid:AT:RT`。 |
+| `--manual` | 手动粘贴 Token。 |
+| `--headless` | 短信登录无头浏览器模式。 |
+
+## 🧪 执行与复核语义
+
+- 签到前读取 slot / context，识别当天是否已经完成。
+- 活动未投放、账号未获得奖励和接口异常分别记录。
+- 调用 `check_in` 后再次读取 context，用 `claimedToday` 的状态变化复核。
+- 单个账号失败不会中断其余账号。
+- 进程输出区分成功、已签、未投放和异常数量。
+
+## 🗂️ 数据文件
+
+| 文件 | 内容 | 是否提交 |
+| :--- | :--- | :---: |
+| `lb_refresh_tokens.json` | 续期后的轮换 Token | ❌ 已忽略；私有 Actions 会单独持久化 |
+| `.lobsterai_token.json` | 可能的本地 Token 状态 | ❌ 已忽略 |
+| `lobsterai-*.json` | 本地账号文件 | ❌ 已忽略 |
+| `auths/` | 本地授权目录 | ❌ 已忽略 |
+| `*.log` | 运行日志 | ❌ 已忽略 |
+
+## 🔒 隐私说明
+
+- 脚本不包含真实账号、手机号、AT 或 RT。
+- 签到来自环境变量 / Secret；本地提取只读取本机客户端数据库。
+- 日志对 Token 进行裁剪或遮罩，但调试输出仍可能暴露账号标识，提交前请人工检查。
+- `lb_refresh_tokens.json`、登录导出值和验证码都属于敏感数据，不要上传到公开仓库或 Issue。
 
 ## ❓ 常见问题
 
 <details>
-<summary><b>为什么记事本打开 lobsterai.sqlite 是乱码？</b></summary>
+<summary><b>SQLite 文件打开后是乱码</b></summary>
 
-SQLite 是二进制数据库格式，不是纯文本。用 `lobsterai_login.py` 提取即可，脚本内部用 Python 的 `sqlite3` 模块解析。
-
+`lobsterai.sqlite` 是二进制数据库。请运行 `python lobsterai_login.py`，工具会通过 SQLite 接口读取 `kv.auth_tokens`。
 </details>
 
 <details>
-<summary><b>AT 过期了怎么办？</b></summary>
+<summary><b>AT 过期后如何处理</b></summary>
 
-如果配置了 RT（格式 `uid:AT:RT`），脚本会在 AT 距过期 < 7 天时自动续期，无需手动干预。只填了 AT 没填 RT 的，AT 过期后需重新运行 `lobsterai_login.py` 提取新的。
-
+配置了有效 RT 时，脚本会在 AT 距过期不足 7 天时自动续期。只有 AT 的配置在过期后需要重新运行桌面提取或短信登录。
 </details>
 
 <details>
-<summary><b>显示"上游未投放签到活动"怎么办？</b></summary>
+<summary><b>提示上游未投放签到活动</b></summary>
 
-可能是客户端版本过旧。运行时加 `--version 2026.9.10`（或更高版本）强制指定。脚本默认会自动获取最新版本，一般不需要手动填。
+先确认客户端版本。脚本默认从官方更新接口获取版本，也可临时指定：
 
-</details>
-
-<details>
-<summary><b>多账号怎么配置？</b></summary>
-
-在电脑上打开 LobsterAI 桌面客户端，依次登录每个账号（切换登录），每次登录后运行一次 `lobsterai_login.py --export`，把得到的 `uid:AT:RT` 逐行追加到青龙环境变量的值里（换行分隔）。
-
-</details>
-
----
-
-## 📁 目录结构
-
-```text
-LobsterAI-AutoCheckin/
-├── lobsterai_checkin.py             # 每日签到（多账号 / Token 自动续期 / 推送）
-├── lobsterai_login.py               # 桌面端登录态提取 / 导出环境变量
-├── lobsterai_sms.py                 # 短信验证码登录（可选，需 Playwright）
-├── requirements.txt                 # 依赖说明（签到需 requests；短信登录可选 playwright）
-├── README.md
-├── CHANGELOG.md
-├── LICENSE
-├── assets/                          # 收款码素材
-└── .github/workflows/lobsterai.yml  # GitHub Actions 工作流（Fork 后可用）
+```bash
+python lobsterai_checkin.py --version 2026.9.10
 ```
 
----
+版本号应替换为当前有效的官方版本。
+</details>
 
-## 📄 License
+<details>
+<summary><b>Actions 没有按 09:00 运行</b></summary>
 
-[MIT](LICENSE)
+检查 workflow 是否启用、默认分支是否包含该工作流、仓库是否长期无活动，以及是否误把北京时间直接填进 GitHub cron。GitHub 的 cron 使用 UTC。
+</details>
 
----
+<details>
+<summary><b>公共仓库为什么没有持久化 Token</b></summary>
 
-## 📌 版本与发布
+工作流只在私有仓库提交 `lb_refresh_tokens.json`。公开仓库跳过持久化，避免轮换后的 RT 被写入公开历史。
+</details>
 
-每个版本独立发布，绝不合并，方便查看版本差异与回退旧版：
+## 📦 版本与发布
 
-| 版本号规则 | 含义 | 示例 |
-| :--- | :--- | :--- |
-| `v主.次.修` | 语义化版本 | `v1.0.0` `v1.0.1` `v1.1.0` |
-| 修复类更新 | 修复位 +1 | `v1.0.1` |
-| 功能类更新 | 次位 +1，修复位归零 | `v1.1.0` |
-| 不兼容变更 | 主位 +1 | `v2.0.0` |
+- 当前版本：`v1.1.0`。
+- 版本采用 `v主.次.修` 语义化格式。
+- 所有历史版本保留在 [Releases](https://github.com/L0NE-6/LobsterAI-AutoCheckin/releases)。
+- 变更记录见 [CHANGELOG.md](CHANGELOG.md)。
 
-所有历史版本：https://github.com/L0NE-6/LobsterAI-AutoCheckin/releases
+## ⚠️ 免责声明
 
-更新记录见 [CHANGELOG.md](CHANGELOG.md)。
+本项目用于个人学习与自动化实践。请遵守 LobsterAI、网易有道及相关服务条款，并自行承担账号使用风险。
 
----
+## ☕ 支持与反馈
 
-## 🤝 反馈与贡献
+遇到问题、有功能建议或发现兼容性变化，请提交 [Issue](https://github.com/L0NE-6/LobsterAI-AutoCheckin/issues)，附上脱敏日志、复现步骤和运行环境；代码改进可通过 [Pull Request](https://github.com/L0NE-6/LobsterAI-AutoCheckin/pulls) 提交。
 
-使用中遇到问题或想补充功能，欢迎提交 [Issue](https://github.com/L0NE-6/LobsterAI-AutoCheckin/issues) 或发起 [Pull Request](https://github.com/L0NE-6/LobsterAI-AutoCheckin/pulls)。
-
----
-
-## ☕ 投喂 / 打赏
-
-这个项目完全免费开源。如果它帮到了你，欢迎扫码请我喝杯咖啡，你的支持会让项目走得更远。
-
-收到的投喂会优先用于升级开发设备——目前的机器跑不动桌面端打包，设备到位后会推进桌面 GUI 版的计划。
+项目免费开源。如果它节省了你的时间，可以自愿扫码支持；Star、真实运行反馈和文档修正同样有价值。
 
 | 支付宝（支持信用卡 / 花呗） | 微信支付 |
 | :---: | :---: |
-| <img src="assets/donate/alipay.jpg" width="300" alt="支付宝打赏码"> | <img src="assets/donate/wechat.png" width="300" alt="微信打赏码"> |
+| <img src="assets/donate/alipay.jpg" width="280" alt="支付宝赞赏码" /> | <img src="assets/donate/wechat.png" width="280" alt="微信赞赏码" /> |
+
+---
+
+## ✦ 星轨 Star Trail
+
+> 每一次 Star 都是一枚坐标，记录这只自动化龙虾从单次签到游向稳定日常的路线。
+
+<a href="https://star-history.com/#L0NE-6/LobsterAI-AutoCheckin&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=L0NE-6/LobsterAI-AutoCheckin&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=L0NE-6/LobsterAI-AutoCheckin&type=Date&theme=light" />
+    <img alt="LobsterAI AutoCheckin Star Trail" src="https://api.star-history.com/svg?repos=L0NE-6/LobsterAI-AutoCheckin&type=Date&theme=light" />
+  </picture>
+</a>
+
+---
+
+<div align="center">
+  <a href="https://github.com/L0NE-6/LobsterAI-AutoCheckin/releases">Releases</a> ·
+  <a href="https://github.com/L0NE-6/LobsterAI-AutoCheckin/issues">Issues</a> ·
+  <a href="https://github.com/L0NE-6/LobsterAI-AutoCheckin">Star</a>
+  <br />
+  <sub>L0NE-6 · DAILY SIGNAL · 让每一次签到都有回读、有记录、有分寸</sub>
+</div>
