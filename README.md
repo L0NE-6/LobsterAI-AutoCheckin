@@ -264,7 +264,7 @@ python lobsterai_checkin.py --version 2026.9.10
 
 ## 📦 版本与发布
 
-- 当前版本：`v1.1.0`。
+- 当前发布版：`v1.1.1`（2026-11-04，文档发行版；脚本逻辑仍为 `v1.1.0`）。
 - 版本采用 `v主.次.修` 语义化格式。
 - 所有历史版本保留在 [Releases](https://github.com/L0NE-6/LobsterAI-AutoCheckin/releases)。
 - 变更记录见 [CHANGELOG.md](CHANGELOG.md)。
