@@ -4,6 +4,8 @@
 
 [简体中文](../README.md) | [English](README.en.md) | [繁體中文](README.zh-Hant.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Português (BR)](README.pt-BR.md)
 
+**Versão atual:** v1.1.2
+
 > A documentação chinesa completa está em [../README.md](../README.md).
 
 ## Visão geral

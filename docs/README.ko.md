@@ -4,11 +4,13 @@
 
 [简体中文](../README.md) | [English](README.en.md) | [繁體中文](README.zh-Hant.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Português (BR)](README.pt-BR.md)
 
+**현재 버전:** v1.1.2
+
 > 전체 중국어 문서는 [../README.md](../README.md)에서 확인할 수 있습니다.
 
 ## 개요
 
-LobsterAI AutoCheckin은 하나 이상의 LobsterAI 계정에서 매일 보상을 받습니다. slot과 context를 읽고 체크인을 제출한 뒤 context를 다시 읽어 결과를 검증합니다. 실행 결과는 수령 성공, 오늘 이미 수령, 상류에서 활동 미제공, 요청 오류로 구분됩니다.
+LobsterAI AutoCheckin은 하나 이상의 LobsterAI 계정에서 매일 보상을 받습니다. slot과 context를 읽고 체크인을 제출한 뒤 context를 다시 읽어 결과를 검증합니다. 실행 결과는 수령 성공, 오늘 이미 수령, 활동 미제공, 요청 오류로 구분됩니다.
 
 저장소에는 세 스크립트가 있습니다. `lobsterai_checkin.py`는 매일 체크인, `lobsterai_login.py`는 데스크톱 클라이언트에서 자격 증명 추출, `lobsterai_sms.py`는 선택적 Playwright SMS 로그인을 담당합니다. 체크인과 데스크톱 추출에는 `requests`만 필요하며 Playwright는 SMS 로그인 전용입니다.
 

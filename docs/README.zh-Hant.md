@@ -4,11 +4,13 @@
 
 [简体中文](../README.md) | [English](README.en.md) | [繁體中文](README.zh-Hant.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Português (BR)](README.pt-BR.md)
 
+**目前版本：** v1.1.2
+
 > 完整中文文件請見 [../README.md](../README.md)。
 
 ## 概覽
 
-LobsterAI AutoCheckin 可以為一個或多個 LobsterAI 帳號領取每日積分。流程會先讀取 slot 與 context，提交簽到，再重新讀取 context 核對結果。報告會區分成功領取、今日已簽、上游未投放活動與請求異常。
+LobsterAI AutoCheckin 可以為一個或多個 LobsterAI 帳號領取每日積分。流程會先讀取 slot 與 context，提交簽到，再重新讀取 context 核對結果。報告會區分成功領取、今日已簽、活動未投放與請求異常。
 
 倉庫包含三個腳本：`lobsterai_checkin.py` 負責每日簽到，`lobsterai_login.py` 從桌面客戶端讀取憑據，`lobsterai_sms.py` 提供可選的 Playwright 簡訊登入。每日簽到與桌面端擷取只需要 `requests`，Playwright 僅供簡訊登入工具使用。
 
