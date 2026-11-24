@@ -6,7 +6,7 @@
 
 **LobsterAI 每日积分签到工具，支持桌面端凭据提取、短信登录、多账号、Token 续期与可选推送。**
 
-> 当前版本：**v1.1.1**（2026-11-04） · 最新更新：文档发行版：统一使用边界、反收费声明与六语导航
+> 当前版本：**v1.1.2**（2026-11-24） · 最新更新：Actions 未配置凭据时中性跳过，不再每日亮红灯
 
 [简体中文](README.md) · [English](docs/README.en.md) · [繁體中文](docs/README.zh-Hant.md) · [日本語](docs/README.ja.md) · [한국어](docs/README.ko.md) · [Português (BR)](docs/README.pt-BR.md)
 
@@ -266,7 +266,7 @@ python lobsterai_checkin.py --version 2026.9.10
 
 ## 📦 版本与发布
 
-- 当前发布版：`v1.1.1`（2026-11-04，文档发行版；脚本逻辑仍为 `v1.1.0`）。
+- 当前发布版：`v1.1.2`（2026-11-24，Actions 空凭据跳过修复；签到主逻辑未变更）。
 - 版本采用 `v主.次.修` 语义化格式。
 - 所有历史版本保留在 [Releases](https://github.com/L0NE-6/LobsterAI-AutoCheckin/releases)。
 - 变更记录见 [CHANGELOG.md](CHANGELOG.md)。

@@ -17,6 +17,9 @@ jobs:
   run:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      LOBSTERAI_TOKEN: ${{ secrets.LOBSTERAI_TOKEN }}
+      PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,10 +32,19 @@ jobs:
       - name: Install deps
         run: pip install requests
 
+      - name: Check credentials
+        id: credentials
+        shell: bash
+        run: |
+          if [ -n "${LOBSTERAI_TOKEN:-}" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=LobsterAI skipped::LOBSTERAI_TOKEN is not configured; no upstream request was sent."
+          fi
+
       - name: Run LobsterAI Checkin
-        env:
-          LOBSTERAI_TOKEN: ${{ secrets.LOBSTERAI_TOKEN }}
-          PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
+        if: steps.credentials.outputs.configured == 'true'
         run: python lobsterai_checkin.py
 
       # ⚠️ 仅在【私有仓库】中持久化令牌状态；公开仓库会跳过，避免 RT 泄露
